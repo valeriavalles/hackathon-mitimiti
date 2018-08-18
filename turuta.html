@@ -1,46 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<title>Mitimiti</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-		<link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mitimiti</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    #map {
+      height: 100%;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #description {
+      font-family: Roboto;
+      font-size: 15px;
+      font-weight: 300;
+    }
+
+    #infowindow-content .title {
+      font-weight: bold;
+    }
+
+    #infowindow-content {
+      display: none;
+    }
+
+    #map #infowindow-content {
+      display: inline;
+    }
+
+    .pac-card {
+      margin: 10px 10px 0 0;
+      border-radius: 2px 0 0 2px;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      outline: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      background-color: #fff;
+      font-family: Roboto;
+    }
+
+    #pac-container {
+      padding-bottom: 12px;
+      margin-right: 12px;
+    }
+
+    .pac-controls {
+      display: inline-block;
+      padding: 5px 11px;
+    }
+
+    .pac-controls label {
+      font-family: Roboto;
+      font-size: 13px;
+      font-weight: 300;
+    }
+
+    #pac-input {
+      background-color: #fff;
+      font-family: Roboto;
+      font-size: 15px;
+      font-weight: 300;
+      margin-left: 12px;
+      padding: 0 11px 0 13px;
+      text-overflow: ellipsis;
+      width: 400px;
+    }
+
+    #pac-input:focus {
+      border-color: #4d90fe;
+    }
+
+    #title {
+      color: #fff;
+      background-color: #4d90fe;
+      font-size: 25px;
+      font-weight: 500;
+      padding: 6px 12px;
+    }
+
+    #target {
+      width: 345px;
+    }
+  </style>
 </head>
+
 <body>
-		<main class="height-vh">
-				<section class="content-map text-center">
-					<div class="container">
-						<div class="row">
-							<div class="col-md-12 ">
-								<figure class="img-content-map">
-									<img  src="http://img.europapress.es/fotoweb/fotonoticia_20150206142609_800.jpg" alt="">
-								</figure>
-							</div>
-						</div>
-					</div>
-				</section>
-				<section class="content-list-destinos text-center">
-					<div class="container">
-						<div class="row">
-							<div class="col-md-12 col-lg-12 col-sm-12">
-								<div class="list-search ">
-									<div class="content-search">
-										<input type="text" class="form-control " placeholder="A donde vas ?">
-										<button class="glyphicon glyphicon-chevron-down icon-search btn-primary"></button>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-lg-12">
-								<div class="content-btn-aceptar">
-									<a href="" class="btn bg-butom">LISTO</a>
-								</div>
-							</div>
-						</div>
-				</section>
-			</main>
+  <div id="map"></div>
+  <main style="position: absolute; bottom: 0; width: 100%;">
+    <!-- <section class="content-map text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 ">
+            <figure class="img-content-map">
+              <img src="http://img.europapress.es/fotoweb/fotonoticia_20150206142609_800.jpg" alt="">
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section> -->
+    <section class="content-list-destinos text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 col-sm-offset-3 text-center bg_white">
+            <div class="list-search ">
+              <div class="content-search">
+                <!-- <input type="text" class="form-control " placeholder="A donde vas ?"> -->
+                <input id="pac-input" class="controls" type="text" placeholder="A donde vas?">
+                <!-- <button class="glyphicon glyphicon-chevron-down icon-search btn-primary"></button> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 col-sm-offset-3 text-center bg_white">
+            <a href="contenido-conductor.html" class="btn bg-butom">LISTO</a>
+          </div>
+        </div>
+    </section>
+  </main>
+
+  <script>
+    // Note: This example requires that you consent to location sharing when
+    // prompted by your browser. If you see the error "The Geolocation service
+    // failed.", it means you probably did not give permission for the browser to
+    // locate you.
+    var map, infoWindow, pos, des;
+    var directionsService;
+    var directionsDisplay;
+
+    function initMap() {
+      var origin = {
+        lat: -33.871,
+        lng: 151.197
+      };
+      directionsService = new google.maps.DirectionsService;
+      directionsDisplay = new google.maps.DirectionsRenderer;
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {
+          lat: -34.397,
+          lng: 150.644
+        },
+        zoom: 14,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
+      // Create the search box and link it to the UI element.
+      var input = document.getElementById('pac-input');
+      var searchBox = new google.maps.places.SearchBox(input);
+      map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+      map.addListener('bounds_changed', function () {
+        searchBox.setBounds(map.getBounds());
+      });
+
+      var markers = [];
+      // Listen for the event fired when the user selects a prediction and retrieve
+      // more details for that place.
+      searchBox.addListener('places_changed', function () {
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+          return;
+        }
+
+        // Clear out the old markers.
+        markers.forEach(function (marker) {
+          marker.setMap(null);
+        });
+        markers = [];
+
+        // For each place, get the icon, name and location.
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function (place) {
+          if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+          }
+          var icon = {
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(25, 25)
+          };
+
+          // Create a marker for each place.
+          markers.push(new google.maps.Marker({
+            map: map,
+            icon: icon,
+            title: place.name,
+            position: place.geometry.location
+          }));
+
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        map.fitBounds(bounds);
+      });
+      // infoWindow = new google.maps.InfoWindow;
+      // var clickHandler = new ClickEventHandler(map, origin);
+      directionsDisplay.setMap(map);
+
+      // Try HTML5 geolocation.
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          // infoWindow.setPosition(pos);
+          // infoWindow.setContent('Location found.');
+          // infoWindow.open(map);
+          // map.setCenter(pos);
+          placeMarkerAndPanTo(pos, map);
+        }, function () {
+          handleLocationError(true, infoWindow, map.getCenter());
+        });
+      } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
+      }
+
+      map.addListener('click', function (e) {
+        // console.log(e.latLng.lat(), e.latLng.lng())
+        des = {
+          lat: e.latLng.lat(),
+          lng: e.latLng.lng()
+        }
+        placeMarkerAndPanTo(e.latLng, map);
+        calculateAndDisplayRoute(directionsService, directionsDisplay)
+      });
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(browserHasGeolocation ?
+        'Error: The Geolocation service failed.' :
+        'Error: Your browser doesn\'t support geolocation.');
+      infoWindow.open(map);
+    }
+
+    function placeMarkerAndPanTo(latLng, map) {
+      var marker = new google.maps.Marker({
+        position: latLng,
+        map: map,
+        animation: google.maps.Animation.DROP
+      });
+      map.panTo(latLng);
+      // calculateAndDisplayRoute(directionsService, directionsDisplay)
+      // marker.addListener('click', toggleBounce);
+    }
+
+    // function toggleBounce() {
+    //   if (marker.getAnimation() !== null) {
+    //     marker.setAnimation(null);
+    //   } else {
+    //     marker.setAnimation(google.maps.Animation.BOUNCE);
+    //   }
+    // }
+
+    function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+      // console.log(pos, des)
+      directionsService.route({
+        origin: pos,
+        destination: des,
+        travelMode: 'DRIVING'
+      }, function (response, status) {
+        console.log(response, status)
+        if (status === 'OK') {
+          directionsDisplay.setDirections(response);
+          fx(response.routes[0]);
+        } else {
+          window.alert('Directions request failed due to ' + status);
+        }
+      });
+    }
+
+    function fx(o) {
+      if (o && o.legs) {
+        for (l = 0; l < o.legs.length; ++l) {
+          var leg = o.legs[l];
+          for (var s = 0; s < leg.steps.length; ++s) {
+            var step = leg.steps[s],
+              a = (step.lat_lngs.length) ? step.lat_lngs[0] : step.start_point,
+              z = (step.lat_lngs.length) ? step.lat_lngs[1] : step.end_point,
+              dir = ((Math.atan2(z.lng() - a.lng(), z.lat() - a.lat()) * 180) / Math.PI) + 360,
+              ico = ((dir - (dir % 3)) % 120);
+            new google.maps.Marker({
+              position: a,
+              icon: new google.maps.MarkerImage('http://maps.google.com/mapfiles/dir_' + ico + '.png',
+                new google.maps.Size(24, 24),
+                new google.maps.Point(0, 0),
+                new google.maps.Point(12, 12)
+              ),
+              map: map,
+              title: Math.round((dir > 360) ? dir - 360 : dir) + '°'
+            });
+          }
+        }
+      }
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARui33eizW-HwPJ20JV6d_mQ1-68lLdOI&libraries=places&callback=initMap"></script>
+
 </body>
+
 </html>
