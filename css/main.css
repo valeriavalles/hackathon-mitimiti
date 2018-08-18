@@ -185,7 +185,9 @@ input {
 }
 
 .content-img-item {
-    outline: 1px solid black;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 5px;
 }
 .content-img-item {
     display: flex;
@@ -196,6 +198,9 @@ input {
 }
 .btn-add-delete {
     padding-top: 20px;
+}
+.content-perfil img {
+    border-radius: 5px;
 }
 
 @media (min-width:768px) {
