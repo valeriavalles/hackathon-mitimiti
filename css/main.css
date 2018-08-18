@@ -269,3 +269,7 @@ input {
     width: 650px;
   }
 }
+.border-img{
+    border: 1px solid rgb(100, 172, 240);
+    border-radius: 5px;
+}
