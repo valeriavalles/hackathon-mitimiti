@@ -11,6 +11,7 @@
 
 .body_one {
   height: 100vh;
+  min-height: 1000px;
   background-repeat: no-repeat;
   background-image: linear-gradient(172deg, rgba(255, 255, 255, 1) 0%, rgba(254, 254, 255, 0.981) 35%, rgb(196, 198, 201) 100%);
   font-family: 'Fjalla One', sans-serif;
@@ -18,6 +19,10 @@
 
 .height--80 {
   height: 80px;
+}
+
+.pt-20 {
+  padding-top: 20px;
 }
 
 .title-text {
@@ -138,6 +143,8 @@
   color: #000;
   border-bottom: 1.3px solid rgb(100, 172, 240);
   background-color: transparent;
+  /* webkit-box-shadow: none;  */
+  box-shadow: none;
 }
 
 .form-control:focus {
@@ -228,9 +235,11 @@
   padding-top: 20px;
 }
 
-/* .content-img-item {
-  outline: 1px solid black;
-} */
+.content-img-item {
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 5px;
+}
 
 .content-img-item {
   display: flex;
@@ -243,6 +252,15 @@
 
 .btn-add-delete {
   padding-top: 20px;
+}
+
+.content-perfil img {
+  border-radius: 5px;
+}
+
+.bg-butom:hover {
+  color: #fff;
+  background: rgb(100, 172, 240);
 }
 
 @media (min-width:768px) {
@@ -354,4 +372,9 @@ body {
   font-size: 25px;
   font-weight: 500;
   padding: 6px 12px;
+}
+
+.border-img {
+  border: 1px solid rgb(100, 172, 240);
+  border-radius: 5px;
 }
