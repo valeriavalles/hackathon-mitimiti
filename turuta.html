@@ -116,7 +116,7 @@
             <div class="list-search ">
               <div class="content-search">
                 <!-- <input type="text" class="form-control " placeholder="A donde vas ?"> -->
-                <input id="pac-input" class="controls" type="text" placeholder="A donde vas?">
+                <input id="pac-input" class="controls form-control" type="text" placeholder="A donde vas?">
                 <!-- <button class="glyphicon glyphicon-chevron-down icon-search btn-primary"></button> -->
               </div>
             </div>
@@ -152,7 +152,8 @@
           lng: 150.644
         },
         zoom: 14,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        // mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: 'roadmap'
       });
       // Create the search box and link it to the UI element.
       var input = document.getElementById('pac-input');
@@ -197,7 +198,7 @@
           // Create a marker for each place.
           markers.push(new google.maps.Marker({
             map: map,
-            icon: icon,
+            // icon: icon,
             title: place.name,
             position: place.geometry.location
           }));
@@ -208,6 +209,13 @@
           } else {
             bounds.extend(place.geometry.location);
           }
+          
+          des = {
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng()
+          }
+          calculateAndDisplayRoute(directionsService, directionsDisplay)
+          // console.log(place.geometry.location)
         });
         map.fitBounds(bounds);
       });
