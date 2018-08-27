@@ -6,7 +6,7 @@ $('#delete').on('click', function() {
 $('.micheckbox' ).on( 'click', function() {
     if( $(this).is(':checked') ){
         // Hacer algo si el checkbox ha sido seleccionado
-        $('#remplace').attr('href','../user.html')
+        $('#remplace').attr('href','user.html')
         console.log('user html')
         // alert("El checkbox con valor " + $(this).val() + " ha sido seleccionado");
     } else {
